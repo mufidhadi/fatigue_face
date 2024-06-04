@@ -5,6 +5,9 @@ import numpy as np
 import os
 from ultralytics import YOLO
 
+yolo_model_path = './model/eye_best.onnx'
+video_source = './mufid2.mp4'
+
 def data_uri_to_cv2_img(uri):
     encoded_data = uri.split(',')[1]
     nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
@@ -30,12 +33,18 @@ for file in os.listdir('./face_db'):
         face_db.append({'name': name, 'img': img})
         print('loaded ' + name)
 
-yolo_model = YOLO('./model/eye_best.pt')
+yolo_model = YOLO(yolo_model_path)
+
+yolo_classes = ['closed eye', 'open eye']
+EYE_OPEN = 0
+EYE_CLOSED = 1
+
+closed_eyes_count = 0
+last_eye_state = -1
 
 # Start capturing video
 print('start capturing...')
-# cap = cv2.VideoCapture(0)
-cap = cv2.VideoCapture('./mufid2.mp4')
+cap = cv2.VideoCapture(video_source)
 
 while True:
     # Capture frame-by-frame
@@ -75,10 +84,24 @@ while True:
 
         # Draw rectangle around face and label with predicted emotion
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-        if have_verified == True:
-            cv2.putText(frame, verified_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+        if have_verified:
+            cv2.putText(frame, 'Driver: '+verified_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+            yolo_result = yolo_model.predict(source=face_roi, conf=0.5, imgsz=320)
+            for result in yolo_result:
+                for box in result.boxes:
+                    x1, y1, x2, y2 = box.xyxy[0]
+                    x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                    frame_x1, frame_y1, frame_x2, frame_y2 = x + x1, y + y1, x + x2, y + y2
+                    cv2.rectangle(frame, (frame_x1, frame_y1), (frame_x2, frame_y2), (0, 255, 0), 2)
+                    box_class = int(box.cls[0])
+                    cv2.putText(frame, yolo_classes[box_class], (frame_x1, frame_y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                    if last_eye_state != box_class:
+                        if box_class == EYE_CLOSED:
+                            closed_eyes_count += 1
+                        last_eye_state = box_class
+            cv2.putText(frame, 'closed eye count: '+str(closed_eyes_count), (5, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
         else:
-            cv2.putText(frame, 'detecting...', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+            cv2.putText(frame, 'recognizing...', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
 
     # Display the resulting frame
     cv2.imshow('Face Detection', frame)

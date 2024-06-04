@@ -5,6 +5,10 @@ import numpy as np
 import os
 from ultralytics import YOLO
 import time
+import mysql.connector
+import mysql_default
+
+mydb = mysql.connector.connect(**mysql_default.mysql_config)
 
 yolo_model_path = './model/eye_best.onnx'
 video_source = './mufid2.mp4'
@@ -32,8 +36,23 @@ for file in os.listdir('./face_db'):
         name = file.split(".")[0]
         name = name.replace("_", " ")
         img = cv2.imread('./face_db/' + file)
-        face_db.append({'name': name, 'img': img})
-        print('loaded ' + name)
+        gray_frame = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
+        faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        for (x, y, w, h) in faces:
+            margin_y = int(h * 0.25)
+            margin_x = int(w * 0.25)
+            y1 = max(0, y - margin_y)
+            y2 = min(y + h + margin_y, img.shape[0])
+            x1 = max(0, x - margin_x)
+            x2 = min(x + w + margin_x, img.shape[1])
+            face_roi_wide = rgb_frame[y1:y2, x1:x2]
+            # resize
+            # new_width = 320
+            new_width = 160
+            new_height = face_roi_wide.shape[0] * new_width // face_roi_wide.shape[1]
+            face_roi_wide = cv2.resize(face_roi_wide, (new_width, new_height))
+            face_db.append({'name': name, 'img': face_roi_wide})
 
 yolo_model = YOLO(yolo_model_path)
 
@@ -111,7 +130,7 @@ while True:
     elapsed_time = current_time - start_time
     if elapsed_time >= counting_time:
         closed_eyes_count = 0
-        
+
     # Display the resulting frame
     cv2.imshow('Face Detection', frame)
 

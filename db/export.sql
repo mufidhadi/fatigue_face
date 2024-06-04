@@ -29,6 +29,9 @@ CREATE TABLE IF NOT EXISTS `driving_log` (
   CONSTRAINT `FK_driving_log_employee` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE `driving_log`
+	ADD COLUMN `eye_closed_duration` FLOAT NULL DEFAULT NULL AFTER `eye_closed_count`;
+
 -- Dumping structure for table face_fatigue.employee
 DROP TABLE IF EXISTS `employee`;
 CREATE TABLE IF NOT EXISTS `employee` (

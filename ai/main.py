@@ -4,9 +4,11 @@ from deepface import DeepFace
 import numpy as np
 import os
 from ultralytics import YOLO
+import time
 
 yolo_model_path = './model/eye_best.onnx'
 video_source = './mufid2.mp4'
+counting_time = 1000 * 60  # 1 minute
 
 def data_uri_to_cv2_img(uri):
     encoded_data = uri.split(',')[1]
@@ -45,6 +47,8 @@ last_eye_state = -1
 # Start capturing video
 print('start capturing...')
 cap = cv2.VideoCapture(video_source)
+
+start_time = time.time()
 
 while True:
     # Capture frame-by-frame
@@ -103,6 +107,11 @@ while True:
         else:
             cv2.putText(frame, 'recognizing...', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
 
+    current_time = time.time()
+    elapsed_time = current_time - start_time
+    if elapsed_time >= counting_time:
+        closed_eyes_count = 0
+        
     # Display the resulting frame
     cv2.imshow('Face Detection', frame)
 

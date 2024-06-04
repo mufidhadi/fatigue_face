@@ -3,6 +3,7 @@ import cv2
 from deepface import DeepFace
 import numpy as np
 import os
+from ultralytics import YOLO
 
 def data_uri_to_cv2_img(uri):
     encoded_data = uri.split(',')[1]
@@ -29,10 +30,12 @@ for file in os.listdir('./face_db'):
         face_db.append({'name': name, 'img': img})
         print('loaded ' + name)
 
+yolo_model = YOLO('./model/eye_best.pt')
 
 # Start capturing video
 print('start capturing...')
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('./mufid2.mp4')
 
 while True:
     # Capture frame-by-frame

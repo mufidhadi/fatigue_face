@@ -3,3 +3,4 @@ tf-keras
 ultralytics
 onnxruntime
 mysql-connector-python
+argparse

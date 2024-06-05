@@ -37,8 +37,16 @@ export function ChartPage({ }) {
             }
             setDriverLogs(logs)
         }
+
         getDriverLogs()
         getDriverSummary()
+        
+        const interval = setInterval(() => {
+            getDriverSummary()
+            getDriverLogs()
+        }, 1000 * 10)
+        
+        return () => clearInterval(interval)
     },[driver])
     return (
         <div className="container">

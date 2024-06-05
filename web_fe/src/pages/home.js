@@ -28,6 +28,9 @@ export function Home({ }) {
                     <div className="col align-self-center">
                         <hr />
                     </div>
+                    <div className="col-auto">
+                        <Link to="/register" className="btn btn-dark">Add Driver</Link>
+                    </div>
                 </div>
 
                 <div className="row my-3">

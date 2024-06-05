@@ -1,15 +1,15 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Home } from './pages/home';
+import { ChartPage } from './pages/chart';
 
 function App() {
     return (
         <>
             <Hero />
             <Routes>
-                <Route path="/" element={
-                    <Home />
-                } />
+                <Route path="/" element={<Home />} />
+                <Route path='chart/:employeeId' element={<ChartPage />} />
             </Routes>
         </>
     )

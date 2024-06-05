@@ -92,6 +92,16 @@ app.get('/driving_log/employee/:id', (req, res) => {
     })
 })
 
+app.get('/driving_log/employee/:id/summary', (req, res) => {
+    const query = "SELECT COUNT(*) as total, AVG(eye_closed_count) as avg_eye_closed_count, AVG(eye_closed_duration) as avg_eye_closed_duration FROM driving_log WHERE employee_id=" + req.params.id
+
+    MYSQLcon.query(query, function (err, result) {
+        if (err) res.sendStatus(500)
+        if (result.length == 0) res.sendStatus(404)
+        res.json(result[0])
+    })
+})
+
 app.listen(port, () => {
     console.log(`BE app listening on port ${port}`)
 })

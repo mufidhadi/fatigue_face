@@ -74,6 +74,24 @@ app.delete('/employee/:id', (req, res) => {
     })
 })
 
+app.get('/driving_log', (req, res) => {
+    const query = "SELECT * FROM driving_log"
+
+    MYSQLcon.query(query, function (err, result) {
+        if (err) res.sendStatus(500)
+        res.json(result)
+    })
+})
+
+app.get('/driving_log/employee/:id', (req, res) => {
+    const query = "SELECT * FROM driving_log WHERE employee_id=" + req.params.id
+
+    MYSQLcon.query(query, function (err, result) {
+        if (err) res.sendStatus(500)
+        res.json(result)
+    })
+})
+
 app.listen(port, () => {
     console.log(`BE app listening on port ${port}`)
 })

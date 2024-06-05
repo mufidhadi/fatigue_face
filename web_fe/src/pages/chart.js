@@ -66,7 +66,7 @@ export function ChartPage({ }) {
                                 <div className="card h-100">
                                     <div className="card-body">
                                         <div className="card-title">Avg. Eye Close Count</div>
-                                        <h3>{parseInt(driverSummary.avg_eye_closed_count)} <small>times</small></h3>
+                                        <h3>{Math.round(driverSummary.avg_eye_closed_count)} <small>times</small></h3>
                                         <p>(per-minute driving)</p>
                                     </div>
                                 </div>

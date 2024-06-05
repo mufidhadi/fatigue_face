@@ -1,5 +1,5 @@
 # Facial Recognition and Fatigue Analysis
-![](./running.gif)
+<video src="./running.mp4" width="100%" autoplay>
 
 ## Pre-request:
 - MySQL >= 5.6

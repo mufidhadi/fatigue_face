@@ -1,4 +1,6 @@
 # Facial Recognition and Fatigue Analysis
+![](./running.gif)
+
 ## Pre-request:
 - MySQL >= 5.6
 - nodejs >= 18.14

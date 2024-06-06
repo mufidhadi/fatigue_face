@@ -33,6 +33,8 @@ export function ChartPage({ }) {
             let logs = []
             for (let i = 0; i < data.length; i++) {
                 const {id, employee_id, ...row} = data[i]
+                const row_time = new Date(row.time)
+                row.time = `${row_time.getDate()}-${row_time.getMonth()+1}-${row_time.getFullYear()} ${row_time.getHours()}:${row_time.getMinutes()}`
                 logs.push(row)
             }
             setDriverLogs(logs)

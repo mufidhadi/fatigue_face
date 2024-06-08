@@ -99,11 +99,15 @@
     ```
     if you're using windows, use this command to activate the virtual environment
     ```bash
-    .\venv\Script\activate
+    .\venv\Scripts\activate
     ```
     or use this command if you're using linux or mac
     ```bash
     source venv/bin/activate
+    ```
+- install all required packages
+    ```bash
+    pip install -r requirements.txt
     ```
 - change mysql setting in the `./ai/mysql_default.py`
     from...

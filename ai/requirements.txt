@@ -4,3 +4,4 @@ ultralytics
 onnxruntime
 mysql-connector-python
 argparse
+opencv-contrib-python
